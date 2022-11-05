@@ -32,6 +32,7 @@ trcl = [
     '5273455', #redraven
     '385019', #artofthetroll
     '448146', #strek
+    '269459', #bogsauce
 ]
 
 def main(cl, trcl):
