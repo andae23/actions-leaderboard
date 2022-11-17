@@ -13,7 +13,6 @@ cl = [
 ]
 
 trcl = [
-    '271258', #diante
     '2041940', #arzach
     '1061425', #mundo
     '625034', #maniac
