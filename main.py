@@ -1,7 +1,6 @@
 import urlfetch
 import re
 import csv
-import numpy as np
 
 # cl = [
 #     '458029', #darknoob
@@ -50,8 +49,8 @@ with open("trclid.csv") as file:
 
 
 def main(clid, trclid):
+    i = 0
     while i < len(clid):
-        print(i)
         id = clid[i]
         response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id["id"])
         r = str(response.content)
