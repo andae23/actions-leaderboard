@@ -1,68 +1,98 @@
 import urlfetch
 import re
+import csv
+import numpy as np
+import sys
 
-cl = [
-    '458029', #darknoob
-    '178430', #bloodless
-    '357795', #dracken
-    '208269', #jonslow
-    '212294', #derp
-    '541127', #rmcoo
-    '6440047', #blackheart
-    '1052193', #buddy
-]
+# cl = [
+#     '458029', #darknoob
+#     '178430', #bloodless
+#     '357795', #dracken
+#     '208269', #jonslow
+#     '212294', #derp
+#     '541127', #rmcoo
+#     '6440047', #blackheart
+#     '1052193', #buddy
+# ]
 
-trcl = [
-    '2041940', #arzach
-    '1061425', #mundo
-    '625034', #maniac
-    '291652', #jorge
-    '209596', #trennig
-    '1464442', #miked
-    '358880', #wenegor
-    '237368', #andae23
-    '583689', #gyeseongyeon
-    '4020942', #pupil
-    '639620', #bazi
-    '3512025', #pompom
-    '1434761', #mrister
-    '2304457', #marintho
-    '1361744', #x0r6zt
-    '5273455', #redraven
-    '385019', #artofthetroll
-    '448146', #strek
-    '269459', #bogsauce
-]
+clid = []
+with open("clid.csv") as file:
+    reader = csv.reader(file)
+    for row in reader:
+        clid.append({"id": row[0], "elo": row[1], "name": row[2]})
 
-def main(cl, trcl):
-    cl_list = {}
-    for id in cl:
-        response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id)
+# trcl = [
+#     '2041940', #arzach
+#     '1061425', #mundo
+#     '625034', #maniac
+#     '291652', #jorge
+#     '209596', #trennig
+#     '1464442', #miked
+#     '358880', #wenegor
+#     '237368', #andae23
+#     '583689', #gyeseongyeon
+#     '4020942', #pupil
+#     '639620', #bazi
+#     '3512025', #pompom
+#     '1434761', #mrister
+#     '2304457', #marintho
+#     '1361744', #x0r6zt
+#     '5273455', #redraven
+#     '385019', #artofthetroll
+#     '448146', #strek
+#     '269459', #bogsauce
+# ]
+
+trclid = []
+with open("trclid.csv") as file:
+    reader = csv.reader(file)
+    for row in reader:
+        trclid.append({"id": row[0], "elo": row[1], "name": row[2]})
+
+
+def main(clid, trclid):
+    for i in np.arange(0,len(clid)):
+        id = clid[i]
+        response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id["id"])
         r = str(response.content)
         if matches := re.search(r"^.*CL\.(.*)\s\((\d*)\)\s.*$",r):
-            name = matches.group(1).strip()
-            rating = int(matches.group(2).strip())
-            cl_list[name] = rating
-    cl_sort = sorted(cl_list.items(), key=lambda x: x[1], reverse=True)
-    
-    trcl_list = {}
-    for id in trcl:
-        response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id)
-        r = str(response.content)
-        if matches := re.search(r"^.*CL\.(.*)\s\((\d*)\)\s.*$",r):
-            name = matches.group(1).strip()
-            rating = int(matches.group(2).strip())
-            trcl_list[name] = rating
-    trcl_sort = sorted(trcl_list.items(), key=lambda x: x[1], reverse=True)
+            clid[i]["elo"] = int(matches.group(2).strip())
+            clid[i]["name"] = matches.group(1).strip()
+        else:
+            clid[i]["elo"] = int(clid[i]["elo"])
+    cl_sort = sorted(clid, key=lambda x: x["elo"], reverse=True)
     
     with open("clboard.txt","w") as file:
         for clown in cl_sort:
-            file.write(f"{clown[0]}: {clown[1]} // ")
-        
+            string = clown["name"] + ": " + str(clown["elo"]) + " // "
+            file.write(string)
+    
+    with open("clid.csv","w") as file:
+        for clown in cl_sort:
+            string = clown["id"] + "," + str(clown["elo"]) + "," + clown["name"] + "\n"
+            file.write(string)
+
+
+    for i in np.arange(0,len(trclid)):
+        id = trclid[i]
+        response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id["id"])
+        r = str(response.content)
+        if matches := re.search(r"^.*CL\.(.*)\s\((\d*)\)\s.*$",r):
+            trclid[i]["elo"] = int(matches.group(2).strip())
+            trclid[i]["name"] = matches.group(1).strip()
+        else:
+            trclid[i]["elo"] = int(trclid[i]["elo"])
+    trcl_sort = sorted(trclid, key=lambda x: x["elo"], reverse=True)
+    
     with open("trclboard.txt","w") as file:
         for clown in trcl_sort:
-            file.write(f"{clown[0]}: {clown[1]} // ")
-
+            string = clown["name"] + ": " + str(clown["elo"]) + " // "
+            file.write(string)
+    
+    with open("trclid.csv","w") as file:
+        for clown in trcl_sort:
+            string = clown["id"] + "," + str(clown["elo"]) + "," + clown["name"] + "\n"
+            file.write(string)
 
 if __name__ == "__main__":
-    main(cl, trcl)
+    main(clid, trclid)
