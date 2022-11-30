@@ -2,7 +2,6 @@ import urlfetch
 import re
 import csv
 import numpy as np
-import sys
 
 # cl = [
 #     '458029', #darknoob
@@ -51,7 +50,8 @@ with open("trclid.csv") as file:
 
 
 def main(clid, trclid):
-    for i in np.arange(0,len(clid)):
+    while i < len(clid):
+        print(i)
         id = clid[i]
         response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id["id"])
         r = str(response.content)
@@ -60,6 +60,7 @@ def main(clid, trclid):
             clid[i]["name"] = matches.group(1).strip()
         else:
             clid[i]["elo"] = int(clid[i]["elo"])
+        i += 1
     cl_sort = sorted(clid, key=lambda x: x["elo"], reverse=True)
     
     with open("clboard.txt","w") as file:
@@ -73,7 +74,8 @@ def main(clid, trclid):
             file.write(string)
 
 
-    for i in np.arange(0,len(trclid)):
+    i = 0
+    while i < len(trclid):
         id = trclid[i]
         response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id["id"])
         r = str(response.content)
@@ -82,6 +84,7 @@ def main(clid, trclid):
             trclid[i]["name"] = matches.group(1).strip()
         else:
             trclid[i]["elo"] = int(trclid[i]["elo"])
+        i += 1
     trcl_sort = sorted(trclid, key=lambda x: x["elo"], reverse=True)
     
     with open("trclboard.txt","w") as file:
