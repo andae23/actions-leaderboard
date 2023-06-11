@@ -14,10 +14,10 @@ import csv
 # ]
 
 clid = []
-with open("clid.csv") as file:
-    reader = csv.reader(file)
-    for row in reader:
-        clid.append({"id": row[0], "elo": row[1], "name": row[2]})
+# with open("clid.csv") as file:
+#     reader = csv.reader(file)
+#     for row in reader:
+#         clid.append({"id": row[0], "elo": row[1], "name": row[2]})
 
 # trcl = [
 #     '2041940', #arzach
@@ -49,28 +49,28 @@ with open("trclid.csv") as file:
 
 
 def main(clid, trclid):
-    i = 0
-    while i < len(clid):
-        id = clid[i]
-        response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id["id"])
-        r = str(response.content)
-        if matches := re.search(r"^.*CL\.(.*)\s\((\d*)\)\s.*$",r):
-            clid[i]["elo"] = int(matches.group(2).strip())
-            clid[i]["name"] = matches.group(1).strip()
-        else:
-            clid[i]["elo"] = int(clid[i]["elo"])
-        i += 1
-    cl_sort = sorted(clid, key=lambda x: x["elo"], reverse=True)
-    
-    with open("clboard.txt","w") as file:
-        for clown in cl_sort:
-            string = clown["name"] + ": " + str(clown["elo"]) + " // "
-            file.write(string)
-    
-    with open("clid.csv","w") as file:
-        for clown in cl_sort:
-            string = clown["id"] + "," + str(clown["elo"]) + "," + clown["name"] + "\n"
-            file.write(string)
+#     i = 0
+#     while i < len(clid):
+#         id = clid[i]
+#         response = urlfetch.get("https://legacy.aoe2companion.com/api/nightbot/rank?&profile_id=" + id["id"])
+#         r = str(response.content)
+#         if matches := re.search(r"^.*CL\.(.*)\s\((\d*)\)\s.*$",r):
+#             clid[i]["elo"] = int(matches.group(2).strip())
+#             clid[i]["name"] = matches.group(1).strip()
+#         else:
+#             clid[i]["elo"] = int(clid[i]["elo"])
+#         i += 1
+#     cl_sort = sorted(clid, key=lambda x: x["elo"], reverse=True)
+#     
+#     with open("clboard.txt","w") as file:
+#         for clown in cl_sort:
+#             string = clown["name"] + ": " + str(clown["elo"]) + " // "
+#             file.write(string)
+#     
+#     with open("clid.csv","w") as file:
+#         for clown in cl_sort:
+#             string = clown["id"] + "," + str(clown["elo"]) + "," + clown["name"] + "\n"
+#             file.write(string)
 
 
     i = 0
