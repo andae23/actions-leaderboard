@@ -97,4 +97,4 @@ def main(clid, trclid):
             file.write(string)
 
 if __name__ == "__main__":
-    # main(clid, trclid)
+    main(clid, trclid)
